@@ -1,0 +1,5 @@
+# Ignore all .so files (shared libraries)
+*.so
+
+# Ignore all .apk files (Android packages)
+*.apk

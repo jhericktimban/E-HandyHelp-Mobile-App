@@ -1,0 +1,4 @@
+#Tue Oct 22 14:06:28 PST 2024
+base.0=C\:\\Users\\Acer\\OneDrive\\Desktop\\E-handyhelp-App-main\\android\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
