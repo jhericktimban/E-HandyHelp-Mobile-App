@@ -71,8 +71,7 @@ class _RegisterPageState extends State<UserRegister> {
     if (!_isPasswordLongEnough ||
         !_hasUpperCase ||
         !_hasLowerCase ||
-        !_hasDigit ||
-        !_hasSpecialCharacter) {
+        !_hasDigit ) {
       return 'Password does not meet the requirements.';
     }
     return null;
@@ -106,7 +105,7 @@ class _RegisterPageState extends State<UserRegister> {
       _hasUpperCase = RegExp(r'(?=.*[A-Z])').hasMatch(value);
       _hasLowerCase = RegExp(r'(?=.*[a-z])').hasMatch(value);
       _hasDigit = RegExp(r'(?=.*\d)').hasMatch(value);
-      _hasSpecialCharacter = RegExp(r'(?=.*[@$!%*?&])').hasMatch(value);
+     
     });
   }
 
@@ -150,7 +149,7 @@ class _RegisterPageState extends State<UserRegister> {
     }
 
     final url = Uri.parse(
-        'https://6762a6b5-bcae-47d9-9b32-173db9699b2c-00-2yzwy4xs0f5zs.pike.replit.dev/register');
+        'https://82a31fb0-14d4-4fa5-99a4-d77055a37ac9-00-7tbd8qpmk7fk.sisko.replit.dev/register');
     print('Preparing to send registration request to: $url'); // Log URL
 
     try {
@@ -469,29 +468,7 @@ class _RegisterPageState extends State<UserRegister> {
                                 ),
                               ],
                             ),
-                            Row(
-                              children: [
-                                Icon(
-                                  _hasSpecialCharacter
-                                      ? Icons.check
-                                      : Icons.clear,
-                                  color: _hasSpecialCharacter
-                                      ? Colors.green
-                                      : Colors.red,
-                                  size: 20,
-                                ),
-                                SizedBox(width: 5),
-                                Text(
-                                  'At least one special character',
-                                  style: TextStyle(
-                                    color: _hasSpecialCharacter
-                                        ? Colors.green
-                                        : Colors.red,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
-                            ),
+                        
                           ],
                         ),
                       ],

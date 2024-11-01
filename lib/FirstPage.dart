@@ -26,7 +26,7 @@ class FirstPage extends StatelessWidget {
                 const SizedBox(height: 20),
                 const Text(
                   'E-HandyHelp: Zone 03, Pasay City',
-                  style: TextStyle(fontFamily: 'roboto', fontSize: 16),
+                  style: TextStyle(fontFamily: 'roboto', fontSize: 18, fontWeight: FontWeight.bold) ,
                 ),
                 const SizedBox(height: 160),
                 const Text(

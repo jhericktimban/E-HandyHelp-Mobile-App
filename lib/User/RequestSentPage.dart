@@ -139,7 +139,7 @@ class ConfirmationPage extends StatelessWidget {
                 );
               },
               child: Text(
-                'Done',
+                'Proceed',
                 style: TextStyle(color: Colors.white),
               ),
               style: ElevatedButton.styleFrom(

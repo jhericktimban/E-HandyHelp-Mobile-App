@@ -20,7 +20,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         // Call your backend API to send the OTP
         final response = await http.post(
           Uri.parse(
-              'https://6762a6b5-bcae-47d9-9b32-173db9699b2c-00-2yzwy4xs0f5zs.pike.replit.dev/send-otp'), // Replace with your backend URL
+              'https://82a31fb0-14d4-4fa5-99a4-d77055a37ac9-00-7tbd8qpmk7fk.sisko.replit.dev/send-otp'), 
           headers: {'Content-Type': 'application/json'},
           body: json.encode({'phoneNumber': phoneNumber}),
         );

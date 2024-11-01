@@ -30,7 +30,7 @@ class _HandyManLoginState extends State<HandyManLogin> {
 
   Future<void> _loginHandyman() async {
     final url = Uri.parse(
-        'https://6762a6b5-bcae-47d9-9b32-173db9699b2c-00-2yzwy4xs0f5zs.pike.replit.dev/login-handyman');
+        'https://82a31fb0-14d4-4fa5-99a4-d77055a37ac9-00-7tbd8qpmk7fk.sisko.replit.dev/login-handyman');
     final String username = _usernameController.text.trim();
     final String password = _passwordController.text.trim();
 
@@ -55,14 +55,21 @@ class _HandyManLoginState extends State<HandyManLogin> {
         final handyman = data['handyman'];
 
         // Check account status
-        final String accountsStatus = handyman['accounts_status'];
+      final String accountsStatus = handyman['accounts_status'];
+      if (accountsStatus == 'pending') {
 
-        // Display a message if the account is suspended
-        if (accountsStatus == 'suspended') {
-          _showAlertDialog(
-              'Your account is currently suspended. You can still log in.');
-        }
+        _showAlertDialog('Your account is still pending for verification.');
+        return; // Exit the function, preventing login
+      } else if (accountsStatus == 'suspended') {
 
+        _showAlertDialog('Your account is currently suspended.');
+        return; // Exit the function, preventing login
+      } else if (accountsStatus != 'verified') {
+
+        _showAlertDialog('Your account status is not verified.');
+        return; // Handle other unexpected statuses if needed
+      }
+      
         // Proceed to save user data in shared preferences regardless of status
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', token);
@@ -207,14 +214,8 @@ class _HandyManLoginState extends State<HandyManLogin> {
                         width: 200,
                       ),
                     ),
-                    SizedBox(height: 50),
-                    Text(
-                      "Login",
-                      style: TextStyle(
-                          color: Color.fromARGB(255, 7, 49, 112),
-                          fontSize: 60,
-                          fontFamily: 'roboto'),
-                    ),
+                    SizedBox(height: 20),
+                   
                   ],
                 ),
               ),
@@ -233,6 +234,14 @@ class _HandyManLoginState extends State<HandyManLogin> {
                     key: _formKey,
                     child: Column(
                       children: <Widget>[
+                        Text(
+                      "Handyman login",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontFamily: 'roboto',
+                          fontWeight: FontWeight.bold),
+                    ),
                         SizedBox(height: 40),
                         TextFormField(
                           controller: _usernameController,
@@ -292,7 +301,9 @@ class _HandyManLoginState extends State<HandyManLogin> {
                             },
                             child: Text(
                               "Forgot Password?",
-                              style: TextStyle(color: Colors.grey),
+                              style: TextStyle(color: Colors.white,        
+                            ),
+                              
                             ),
                           ),
                         ),
@@ -327,7 +338,7 @@ class _HandyManLoginState extends State<HandyManLogin> {
                           children: [
                             Text(
                               "Don't have an account? ",
-                              style: TextStyle(color: Colors.grey),
+                              style: TextStyle(color: Colors.white),
                             ),
                             TextButton(
                               onPressed: () {
@@ -338,9 +349,9 @@ class _HandyManLoginState extends State<HandyManLogin> {
                                 );
                               },
                               child: Text(
-                                "Register Now",
+                                "Sign up",
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: Color.fromARGB(255, 109, 192, 255),
                                 ),
                               ),
                             ),

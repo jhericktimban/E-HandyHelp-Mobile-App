@@ -49,7 +49,7 @@ class _HandymanDetailsPageState extends State<HandymanDetailsPage> {
 
   Future<void> _fetchFeedbacks() async {
     final url =
-        'https://6762a6b5-bcae-47d9-9b32-173db9699b2c-00-2yzwy4xs0f5zs.pike.replit.dev/feedbacks?handymanId=${widget.handymanId}';
+        'https://82a31fb0-14d4-4fa5-99a4-d77055a37ac9-00-7tbd8qpmk7fk.sisko.replit.dev/feedbacks?handymanId=${widget.handymanId}';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
@@ -138,6 +138,7 @@ class _HandymanDetailsPageState extends State<HandymanDetailsPage> {
           title: Text('Handyman Details'),
           backgroundColor: Color.fromARGB(255, 7, 49, 112),
           iconTheme: IconThemeData(color: Colors.white),
+           foregroundColor: Colors.white,
         ),
         body: Padding(
           padding: EdgeInsets.all(16.0),
@@ -210,10 +211,12 @@ class _HandymanDetailsPageState extends State<HandymanDetailsPage> {
   Widget _buildFeedbackButton() {
     return ElevatedButton(
       onPressed: _showFeedbacksDialog, // Show feedbacks dialog
-      child: Text('View Feedbacks'),
+      child: Text('View Feedbacks' ),
       style: ElevatedButton.styleFrom(
         backgroundColor: Color.fromARGB(255, 7, 49, 112),
-        minimumSize: Size(double.infinity, 50),
+        minimumSize: Size(double.infinity, 50), 
+        foregroundColor: Colors.white,
+        
       ),
     );
   }
@@ -237,6 +240,7 @@ class _HandymanDetailsPageState extends State<HandymanDetailsPage> {
       style: ElevatedButton.styleFrom(
         backgroundColor: Color.fromARGB(255, 7, 49, 112),
         minimumSize: Size(double.infinity, 50),
+        foregroundColor: Colors.white,
       ),
     );
   }
@@ -250,6 +254,7 @@ class _HandymanDetailsPageState extends State<HandymanDetailsPage> {
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.red,
         minimumSize: Size(double.infinity, 50),
+        foregroundColor: Colors.white,
       ),
     );
   }

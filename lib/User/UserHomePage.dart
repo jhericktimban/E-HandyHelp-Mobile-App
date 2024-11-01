@@ -89,7 +89,7 @@ class _DashboardState extends State<Dashboard> {
   Future<void> fetchProfiles() async {
     try {
       final response = await http.get(Uri.parse(
-          'https://6762a6b5-bcae-47d9-9b32-173db9699b2c-00-2yzwy4xs0f5zs.pike.replit.dev/profiles'));
+          'https://82a31fb0-14d4-4fa5-99a4-d77055a37ac9-00-7tbd8qpmk7fk.sisko.replit.dev/profiles'));
       if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body);
         setState(() {
@@ -510,7 +510,7 @@ class _BookingListScreenState extends State<BookingListScreen> {
     try {
       final response = await http.get(
         Uri.parse(
-            'https://6762a6b5-bcae-47d9-9b32-173db9699b2c-00-2yzwy4xs0f5zs.pike.replit.dev/bookings-user?userId=${widget.userId}&status=${widget.status}'),
+            'https://82a31fb0-14d4-4fa5-99a4-d77055a37ac9-00-7tbd8qpmk7fk.sisko.replit.dev/bookings-user?userId=${widget.userId}&status=${widget.status}'),
       );
       if (response.statusCode == 200) {
         final List<dynamic> bookingsJson = json.decode(response.body);
@@ -528,7 +528,7 @@ class _BookingListScreenState extends State<BookingListScreen> {
     try {
       final response = await http.post(
         Uri.parse(
-            'https://6762a6b5-bcae-47d9-9b32-173db9699b2c-00-2yzwy4xs0f5zs.pike.replit.dev/reports'),
+            'https://82a31fb0-14d4-4fa5-99a4-d77055a37ac9-00-7tbd8qpmk7fk.sisko.replit.dev/reports'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
           'bookingId': bookingId,
@@ -552,7 +552,7 @@ class _BookingListScreenState extends State<BookingListScreen> {
     try {
       final response = await http.patch(
         Uri.parse(
-            'https://6762a6b5-bcae-47d9-9b32-173db9699b2c-00-2yzwy4xs0f5zs.pike.replit.dev/bookings/$bookingId/complete'),
+            'https://82a31fb0-14d4-4fa5-99a4-d77055a37ac9-00-7tbd8qpmk7fk.sisko.replit.dev/bookings/$bookingId/complete'),
         headers: {'Content-Type': 'application/json'},
       );
       if (response.statusCode == 200) {
@@ -573,7 +573,7 @@ class _BookingListScreenState extends State<BookingListScreen> {
     try {
       final response = await http.post(
         Uri.parse(
-            'https://6762a6b5-bcae-47d9-9b32-173db9699b2c-00-2yzwy4xs0f5zs.pike.replit.dev/feedback'),
+            'https://82a31fb0-14d4-4fa5-99a4-d77055a37ac9-00-7tbd8qpmk7fk.sisko.replit.dev/feedback'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
           'bookingId': bookingId,
@@ -608,137 +608,170 @@ class _BookingListScreenState extends State<BookingListScreen> {
     );
   }
 
-  void _showBookingDetails(BuildContext context, Booking booking) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Booking Details'),
-          content: SingleChildScrollView(
-            child: Column(
-              children: [
-                Text('Service: ${booking.serviceDetails}'),
-                Text('Date of Service: ${booking.dateOfService}'),
-                Text(
-                    'Handyman Name: ${booking.bookerFirstName} ${booking.bookerLastName}'),
-                ...booking.images
-                    .map((image) => Image.memory(base64Decode(image))),
-              ],
-            ),
-          ),
-          actions: _getDialogActions(context, booking),
-        );
-      },
-    );
-  }
-
-  List<Widget> _getDialogActions(BuildContext context, Booking booking) {
-    if (widget.status == 'accepted') {
-      return [
-        TextButton(
-          onPressed: () => _showReportDialog(context, booking.id),
-          child: Text('Report Booking'),
-        ),
-        TextButton(
-          onPressed: () {
-            _markAsCompleted(booking.id);
-            Navigator.pop(context);
-          },
-          child: Text('Mark as Completed'),
-        ),
-      ];
-    } else {
-      return [
-        TextButton(
-          onPressed: () => _showFeedbackDialog(context, booking.id),
-          child: Text('Leave Feedback'),
-        ),
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text('Close'),
-        ),
-      ];
-    }
-  }
-
-  void _showReportDialog(BuildContext context, String bookingId) {
-    String reportReason = '';
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Report Booking'),
-          content: TextField(
-            onChanged: (value) => reportReason = value,
-            decoration: InputDecoration(hintText: 'Enter report reason'),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                _reportBooking(bookingId, reportReason);
-                Navigator.pop(context);
-              },
-              child: Text('Submit Report'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('Cancel'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showFeedbackDialog(BuildContext context, String bookingId) {
-    int rating = 3;
-    String feedback = '';
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Leave Feedback'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
+ void _showBookingDetails(BuildContext context, Booking booking) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text('Booking Details'),
+        content: SingleChildScrollView(
+          child: Column(
             children: [
-              Text('Rate your experience:'),
-              DropdownButton<int>(
-                value: rating,
-                onChanged: (newRating) {
-                  setState(() {
-                    rating = newRating!;
-                  });
-                },
-                items: List.generate(5, (index) {
-                  return DropdownMenuItem(
-                    value: index + 1,
-                    child: Text('${index + 1} Star${index == 0 ? '' : 's'}'),
-                  );
-                }),
-              ),
-              TextField(
-                onChanged: (value) => feedback = value,
-                decoration: InputDecoration(hintText: 'Enter feedback'),
-              ),
+              Text('Service: ${booking.serviceDetails}'),
+              Text('Date of Service: ${booking.dateOfService}'),
+              Text('Booker Name: ${booking.bookerFirstName} ${booking.bookerLastName}'),
+              ...booking.images
+                  .map((image) => Image.memory(base64Decode(image))),
             ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                _submitFeedback(bookingId, rating, feedback);
+        ),
+        actions: _getDialogActions(context, booking),
+      );
+    },
+  );
+}
+
+List<Widget> _getDialogActions(BuildContext context, Booking booking) {
+  if (widget.status == 'accepted') {
+    return [
+      TextButton(
+        onPressed: () => _showReportDialog(context, booking.id),
+        child: Text('Report Booking'),
+      ),
+      TextButton(
+        onPressed: () => _confirmMarkAsCompleted(context, booking.id),
+        child: Text('Mark as Completed'),
+      ),
+    ];
+  } else {
+    return [
+      TextButton(
+        onPressed: () => _showFeedbackDialog(context, booking.id),
+        child: Text('Leave Feedback'),
+      ),
+      TextButton(
+        onPressed: () => Navigator.pop(context),
+        child: Text('Close'),
+      ),
+    ];
+  }
+}
+
+void _showReportDialog(BuildContext context, String bookingId) {
+  String reportReason = '';
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text('Report Booking'),
+        content: TextField(
+          onChanged: (value) => reportReason = value,
+          decoration: InputDecoration(hintText: 'Enter report reason'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              bool confirmed = await _showConfirmationDialog(context, 'Report Submission', 'Are you sure you want to submit this report?');
+              if (confirmed) {
+                _reportBooking(bookingId, reportReason);
                 Navigator.pop(context);
+              }
+            },
+            child: Text('Submit Report'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void _confirmMarkAsCompleted(BuildContext context, String bookingId) async {
+  bool confirmed = await _showConfirmationDialog(context, 'Mark as Completed', 'Are you sure you want to mark this booking as completed?');
+  if (confirmed) {
+    _markAsCompleted(bookingId);
+    Navigator.pop(context); // Close the booking details dialog
+  }
+}
+
+Future<bool> _showConfirmationDialog(BuildContext context, String title, String message) {
+  return showDialog<bool>(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text(title),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(false); // Return false if canceled
+            },
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(true); // Return true if confirmed
+            },
+            child: Text('Confirm'),
+          ),
+        ],
+      );
+    },
+  ).then((value) => value ?? false); // Handle null case
+}
+
+void _showFeedbackDialog(BuildContext context, String bookingId) {
+  int rating = 3;
+  String feedback = '';
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text('Leave Feedback'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Rate your experience:'),
+            DropdownButton<int>(
+              value: rating,
+              onChanged: (newRating) {
+                setState(() {
+                  rating = newRating!;
+                });
               },
-              child: Text('Submit Feedback'),
+              items: List.generate(5, (index) {
+                return DropdownMenuItem(
+                  value: index + 1,
+                  child: Text('${index + 1} Star${index == 0 ? '' : 's'}'),
+                );
+              }),
             ),
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('Cancel'),
+            TextField(
+              onChanged: (value) => feedback = value,
+              decoration: InputDecoration(hintText: 'Enter feedback'),
             ),
           ],
-        );
-      },
-    );
-  }
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              _submitFeedback(bookingId, rating, feedback);
+              Navigator.pop(context);
+            },
+            child: Text('Submit Feedback'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel'),
+          ),
+        ],
+      );
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -835,7 +868,7 @@ class _ContactAdminScreenState extends State<ContactAdminScreen> {
       // Make the POST request to the backend
       var response = await http.post(
         Uri.parse(
-            'https://6762a6b5-bcae-47d9-9b32-173db9699b2c-00-2yzwy4xs0f5zs.pike.replit.dev/contact-admin'), // Change to your server address
+            'https://82a31fb0-14d4-4fa5-99a4-d77055a37ac9-00-7tbd8qpmk7fk.sisko.replit.dev/contact-admin'), // Change to your server address
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
         },

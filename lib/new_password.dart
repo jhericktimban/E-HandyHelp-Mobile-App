@@ -21,7 +21,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
 
     if (newPassword == confirmPassword) {
       final url = Uri.parse(
-          'https://6762a6b5-bcae-47d9-9b32-173db9699b2c-00-2yzwy4xs0f5zs.pike.replit.dev/reset-password/${widget.userId}'); // Backend API URL
+          'https://82a31fb0-14d4-4fa5-99a4-d77055a37ac9-00-7tbd8qpmk7fk.sisko.replit.dev/reset-password/${widget.userId}'); // Backend API URL
 
       try {
         final response = await http.post(

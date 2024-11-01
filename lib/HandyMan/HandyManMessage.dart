@@ -49,7 +49,7 @@ class _HandymanMessagesScreenState extends State<HandymanMessagesScreen> {
   Future<void> fetchMessages() async {
     print('id:' + _id);
     final response = await http.get(Uri.parse(
-        'https://6762a6b5-bcae-47d9-9b32-173db9699b2c-00-2yzwy4xs0f5zs.pike.replit.dev/api/messages?handymanId=$_id'));
+        'https://82a31fb0-14d4-4fa5-99a4-d77055a37ac9-00-7tbd8qpmk7fk.sisko.replit.dev/api/messages?handymanId=$_id'));
 
     if (response.statusCode == 200) {
       setState(() {
@@ -72,28 +72,31 @@ class _HandymanMessagesScreenState extends State<HandymanMessagesScreen> {
       ),
     );
   }
+void reportMessage(String bookingId) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      String reportReason = '';
+      return AlertDialog(
+        title: Text('Report Client'),
+        content: TextField(
+          onChanged: (value) {
+            reportReason = value;
+          },
+          decoration: InputDecoration(hintText: 'Enter report reason'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              if (reportReason.isNotEmpty) {
+                // Confirmation dialog before sending the report
+                bool confirmed = await _showConfirmationDialog(context);
 
-  void reportMessage(String bookingId) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        String reportReason = '';
-        return AlertDialog(
-          title: Text('Report Client'),
-          content: TextField(
-            onChanged: (value) {
-              reportReason = value;
-            },
-            decoration: InputDecoration(hintText: 'Enter report reason'),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () async {
-                if (reportReason.isNotEmpty) {
+                if (confirmed) {
                   // Send report to the backend
                   final response = await http.post(
                     Uri.parse(
-                        'https://6762a6b5-bcae-47d9-9b32-173db9699b2c-00-2yzwy4xs0f5zs.pike.replit.dev/reports'),
+                        'https://82a31fb0-14d4-4fa5-99a4-d77055a37ac9-00-7tbd8qpmk7fk.sisko.replit.dev/reports'),
                     headers: {'Content-Type': 'application/json'},
                     body: json.encode({
                       'bookingId': bookingId,
@@ -105,7 +108,7 @@ class _HandymanMessagesScreenState extends State<HandymanMessagesScreen> {
                   if (response.statusCode == 201) {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Report submitted successfully!')),
+                      SnackBar(content: Text('Report sent successfully!')),
                     );
                   } else {
                     Navigator.pop(context);
@@ -114,20 +117,48 @@ class _HandymanMessagesScreenState extends State<HandymanMessagesScreen> {
                     );
                   }
                 }
-              },
-              child: Text('Submit'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('Cancel'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+              }
+            },
+            child: Text('Submit'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('Cancel'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+// Function to show confirmation dialog
+Future<bool> _showConfirmationDialog(BuildContext context) {
+  return showDialog<bool>(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text('Confirm Submission'),
+        content: Text('Are you sure you want to submit this report?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(false); // Return false if canceled
+            },
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(true); // Return true if confirmed
+            },
+            child: Text('Confirm'),
+          ),
+        ],
+      );
+    },
+  ).then((value) => value ?? false); // Handle null case
+}
 
   @override
   Widget build(BuildContext context) {
@@ -258,7 +289,7 @@ class ChatScreenState extends State<ChatScreen> {
 
   Future<void> fetchConversation() async {
     final response = await http.get(Uri.parse(
-        'https://6762a6b5-bcae-47d9-9b32-173db9699b2c-00-2yzwy4xs0f5zs.pike.replit.dev/api/conversation/${widget.bookingId}'));
+        'https://82a31fb0-14d4-4fa5-99a4-d77055a37ac9-00-7tbd8qpmk7fk.sisko.replit.dev/api/conversation/${widget.bookingId}'));
     if (response.statusCode == 200) {
       setState(() {
         _messages = json.decode(response.body);
@@ -280,7 +311,7 @@ class ChatScreenState extends State<ChatScreen> {
       try {
         final response = await http.post(
           Uri.parse(
-              'https://6762a6b5-bcae-47d9-9b32-173db9699b2c-00-2yzwy4xs0f5zs.pike.replit.dev/api/send-message'),
+              'https://82a31fb0-14d4-4fa5-99a4-d77055a37ac9-00-7tbd8qpmk7fk.sisko.replit.dev/api/send-message'),
           headers: {
             'Content-Type': 'application/json',
           },

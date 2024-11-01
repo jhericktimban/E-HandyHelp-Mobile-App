@@ -2,7 +2,6 @@ plugins {
     id "com.android.application"
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
-    
 }
 
 def localProperties = new Properties()
@@ -23,10 +22,8 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
-
-
 android {
-    namespace "com.example.E_HandyHelp"
+    namespace "com.example.android"
     compileSdkVersion 34
     ndkVersion flutter.ndkVersion
 
@@ -44,7 +41,10 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.example.E_HandyHelp"
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        applicationId "com.example.android"
+        // You can update the following values to match your application needs.
+        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
@@ -53,10 +53,9 @@ android {
 
     buildTypes {
         release {
-            // Enabling code shrinking and resource shrinking
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig signingConfigs.debug
         }
     }
 }
@@ -65,8 +64,4 @@ flutter {
     source '../..'
 }
 
-dependencies {
-    // Add any necessary dependencies here
-}
-
-//apply plugin: 'com.google.gms.google-services'
+dependencies {}

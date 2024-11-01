@@ -84,8 +84,7 @@ class _HandyManRegisterState extends State<HandyManRegister> {
     if (!_isPasswordLongEnough ||
         !_hasUpperCase ||
         !_hasLowerCase ||
-        !_hasDigit ||
-        !_hasSpecialCharacter) {
+        !_hasDigit) {
       return 'Password does not meet the requirements.';
     }
     return null;
@@ -119,7 +118,6 @@ class _HandyManRegisterState extends State<HandyManRegister> {
       _hasUpperCase = RegExp(r'(?=.*[A-Z])').hasMatch(value);
       _hasLowerCase = RegExp(r'(?=.*[a-z])').hasMatch(value);
       _hasDigit = RegExp(r'(?=.*\d)').hasMatch(value);
-      _hasSpecialCharacter = RegExp(r'(?=.*[@$!%*?&])').hasMatch(value);
     });
   }
 
@@ -148,11 +146,6 @@ class _HandyManRegisterState extends State<HandyManRegister> {
       return;
     }
 
-    if (_certificatesImages.isEmpty) {
-      _showSnackBar('Please upload a photo of your certificates.');
-      return;
-    }
-
     if (!_dataPrivacyConsent) {
       _showSnackBar('You must agree to the Data Privacy Act.');
       return;
@@ -171,7 +164,7 @@ class _HandyManRegisterState extends State<HandyManRegister> {
     }
 
     final url = Uri.parse(
-        'https://6762a6b5-bcae-47d9-9b32-173db9699b2c-00-2yzwy4xs0f5zs.pike.replit.dev/register-handyman');
+        'https://82a31fb0-14d4-4fa5-99a4-d77055a37ac9-00-7tbd8qpmk7fk.sisko.replit.dev/register-handyman');
 
     try {
       final response = await http.post(
@@ -495,29 +488,6 @@ class _HandyManRegisterState extends State<HandyManRegister> {
                               ),
                             ],
                           ),
-                          Row(
-                            children: [
-                              Icon(
-                                _hasSpecialCharacter
-                                    ? Icons.check
-                                    : Icons.clear,
-                                color: _hasSpecialCharacter
-                                    ? Colors.green
-                                    : Colors.red,
-                                size: 20,
-                              ),
-                              SizedBox(width: 5),
-                              Text(
-                                'At least one special character',
-                                style: TextStyle(
-                                  color: _hasSpecialCharacter
-                                      ? Colors.green
-                                      : Colors.red,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
                         ],
                       ),
                     ),
@@ -625,26 +595,31 @@ class _HandyManRegisterState extends State<HandyManRegister> {
                       items: _specializations.map((String specialization) {
                         return DropdownMenuItem<String>(
                           value: specialization,
-                          child: Row(
-                            children: <Widget>[
-                              Checkbox(
-                                value: _selectedSpecializations
-                                    .contains(specialization),
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    if (value!) {
-                                      _selectedSpecializations
-                                          .add(specialization);
-                                    } else {
-                                      _selectedSpecializations
-                                          .remove(specialization);
-                                    }
-                                  });
-                                },
-                              ),
-                              SizedBox(width: 10),
-                              Text(specialization),
-                            ],
+                          child: StatefulBuilder(
+                            builder:
+                                (BuildContext context, StateSetter setState) {
+                              return Row(
+                                children: <Widget>[
+                                  Checkbox(
+                                    value: _selectedSpecializations
+                                        .contains(specialization),
+                                    onChanged: (bool? value) {
+                                      setState(() {
+                                        if (value!) {
+                                          _selectedSpecializations
+                                              .add(specialization);
+                                        } else {
+                                          _selectedSpecializations
+                                              .remove(specialization);
+                                        }
+                                      });
+                                    },
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text(specialization),
+                                ],
+                              );
+                            },
                           ),
                         );
                       }).toList(),
@@ -654,15 +629,14 @@ class _HandyManRegisterState extends State<HandyManRegister> {
                         }
                         return null;
                       },
-                      onSaved: (value) {},
                       onChanged: (String? value) {},
                     ),
-                    SizedBox(height: 15),
+                    SizedBox(height: 35),
                     Text(
-                      'Upload a photo(s) of your Barangay ID',
+                      'Upload a photo(s) of your Barangay ID or any Valid ID',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
+                        fontSize: 12,
                       ),
                     ),
                     SizedBox(height: 10.0),
@@ -676,8 +650,8 @@ class _HandyManRegisterState extends State<HandyManRegister> {
                               _getidImage(ImageSource.gallery);
                             },
                             child: Container(
-                              width: 150.0,
-                              height: 150.0,
+                              width: 100.0,
+                              height: 100.0,
                               decoration: BoxDecoration(
                                 border: Border.all(
                                     color: Color.fromARGB(255, 7, 49, 112)),
@@ -690,8 +664,8 @@ class _HandyManRegisterState extends State<HandyManRegister> {
                         return Stack(
                           children: [
                             Container(
-                              width: 150.0,
-                              height: 150.0,
+                              width: 100.0,
+                              height: 100.0,
                               decoration: BoxDecoration(
                                 border: Border.all(
                                     color: Color.fromARGB(255, 7, 49, 112)),
@@ -715,10 +689,10 @@ class _HandyManRegisterState extends State<HandyManRegister> {
                     ),
                     SizedBox(height: 15),
                     Text(
-                      'Upload a file of your certificates',
+                      'Upload a file of your CV (optional)',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
+                        fontSize: 12,
                       ),
                     ),
                     SizedBox(height: 10.0),
@@ -733,8 +707,8 @@ class _HandyManRegisterState extends State<HandyManRegister> {
                               _getcertificatesImage(ImageSource.gallery);
                             },
                             child: Container(
-                              width: 150.0,
-                              height: 150.0,
+                              width: 100.0,
+                              height: 100.0,
                               decoration: BoxDecoration(
                                 border: Border.all(
                                     color: Color.fromARGB(255, 7, 49, 112)),
@@ -747,8 +721,8 @@ class _HandyManRegisterState extends State<HandyManRegister> {
                         return Stack(
                           children: [
                             Container(
-                              width: 150.0,
-                              height: 150.0,
+                              width: 100.0,
+                              height: 100.0,
                               decoration: BoxDecoration(
                                 border: Border.all(
                                     color: Color.fromARGB(255, 7, 49, 112)),
@@ -764,7 +738,10 @@ class _HandyManRegisterState extends State<HandyManRegister> {
                                 onPressed: () {
                                   _removecertificatesImage(index);
                                 },
-                                icon: Icon(Icons.delete),
+                                icon: Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
+                                ),
                               ),
                             ),
                           ],

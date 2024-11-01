@@ -25,9 +25,7 @@ class BookingForm extends StatefulWidget {
 
 class _BookingFormState extends State<BookingForm> {
   final _formKey = GlobalKey<FormState>();
-
   final _serviceDetailsController = TextEditingController();
-
   DateTime _selectedDate = DateTime.now();
   bool _urgentRequest = false;
   List<String> _imagesBase64 = [];
@@ -73,9 +71,34 @@ class _BookingFormState extends State<BookingForm> {
     }
   }
 
+  Future<void> _confirmAndSendBookingRequest() async {
+    final isConfirmed = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Booking'),
+          content: const Text('Are you sure you want to send this booking request?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Confirm'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (isConfirmed == true) {
+      _sendBookingRequest();
+    }
+  }
+
   Future<void> _sendBookingRequest() async {
     if (_formKey.currentState!.validate()) {
-      // Check if the booking time is at least 3 hours from now
       final DateTime now = DateTime.now();
       if (_selectedDate.isBefore(now.add(Duration(hours: 3)))) {
         _showErrorDialog('Booking must be at least 3 hours in advance.');
@@ -83,7 +106,7 @@ class _BookingFormState extends State<BookingForm> {
       }
 
       final url =
-          'https://6762a6b5-bcae-47d9-9b32-173db9699b2c-00-2yzwy4xs0f5zs.pike.replit.dev/api/bookings';
+          'https://82a31fb0-14d4-4fa5-99a4-d77055a37ac9-00-7tbd8qpmk7fk.sisko.replit.dev/api/bookings';
       final response = await http.post(
         Uri.parse(url),
         headers: {"Content-Type": "application/json"},
@@ -100,7 +123,7 @@ class _BookingFormState extends State<BookingForm> {
       );
 
       if (response.statusCode == 200) {
-        _showSuccessDialog('Booking request sent successfully!');
+        _showSuccessDialog('Booking request sent successfully!, Wait for your Handyman to Accept your request.');
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -166,14 +189,12 @@ class _BookingFormState extends State<BookingForm> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Navigator.pop(
-            context); // This will take you to the previous panel instead of the first page
-        return false; // Prevent default back navigation behavior
+        Navigator.pop(context);
+        return false;
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Booking Information',
-              style: TextStyle(color: Colors.white)),
+          title: Text('Booking Information', style: TextStyle(color: Colors.white)),
           backgroundColor: const Color.fromARGB(255, 7, 49, 112),
           iconTheme: IconThemeData(color: Colors.white),
           leading: IconButton(
@@ -193,14 +214,12 @@ class _BookingFormState extends State<BookingForm> {
                     controller: _serviceDetailsController,
                     decoration: InputDecoration(
                       labelText: 'Service Details',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0)),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
                       contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
                     ),
                     maxLines: 5,
-                    validator: (value) => value!.isEmpty
-                        ? 'Please describe the service needed'
-                        : null,
+                    validator: (value) =>
+                        value!.isEmpty ? 'Please describe the service needed' : null,
                   ),
                   SizedBox(height: 16),
                   ListTile(
@@ -238,11 +257,12 @@ class _BookingFormState extends State<BookingForm> {
                   ),
                   SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: _sendBookingRequest,
+                    onPressed: _confirmAndSendBookingRequest,
                     child: Text('Send Request'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 7, 49, 112),
                       minimumSize: Size(double.infinity, 50),
+                      foregroundColor: Colors.white,
                     ),
                   ),
                 ],

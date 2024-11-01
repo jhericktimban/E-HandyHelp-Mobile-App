@@ -84,90 +84,72 @@ class _UserLoginState extends State<UserLogin> {
   }
 
 // Updated login function
-  Future<void> _loginUser() async {
-    final url = Uri.parse(
-        'https://6762a6b5-bcae-47d9-9b32-173db9699b2c-00-2yzwy4xs0f5zs.pike.replit.dev/login-user');
-    final String username = _usernameController.text.trim();
-    final String password = _passwordController.text.trim();
+Future<void> _loginUser() async {
+  final url = Uri.parse('https://82a31fb0-14d4-4fa5-99a4-d77055a37ac9-00-7tbd8qpmk7fk.sisko.replit.dev/login-user');
+  final String username = _usernameController.text.trim();
+  final String password = _passwordController.text.trim();
 
-    try {
-      // Log the login request body
-      print('Login request: username = $username, password = $password');
+  try {
+    // Log the login request body
+    print('Login request: username = $username, password = $password');
 
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'username': username,
-          'password': password,
-        }),
-      );
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'username': username,
+        'password': password,
+      }),
+    );
 
-      // Log the HTTP response status
-      print('HTTP Response: ${response.statusCode}');
+    // Log the HTTP response status
+    print('HTTP Response: ${response.statusCode}');
 
-      if (response.statusCode == 200) {
-        // Decode the JSON response
-        final Map<String, dynamic> responseData = jsonDecode(response.body);
+    final data = jsonDecode(response.body);
 
-        // Log the response data
-        print('Login successful, response data: $responseData');
+    if (response.statusCode == 200) {
+      // Decode the JSON response
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+      final user = data['user'];
 
-        // Save user data in shared preferences
-        await _saveUserData(responseData);
+      // Log the response data
+      print('Login successful, response data: $responseData');
+
+      // Save user data in shared preferences
+      await _saveUserData(responseData);
 
         // Check account status
-        final String accountsStatus = responseData['user']['accounts_status'];
+      final String accountsStatus = user['accounts_status'];
+      if (accountsStatus == 'pending') {
 
-        // Notify user about their account status
-        if (accountsStatus == 'pending') {
-          _showAlertDialog('Your account is still pending for verification.');
-        } else if (accountsStatus == 'suspended') {
-          _showAlertDialog(
-              'Your account is currently suspended. You can still log in.');
-        } else if (accountsStatus != 'verified') {
-          _showAlertDialog('Your account status is not verified.');
-        }
+        _showAlertDialog('Your account is still pending for verification.');
+        return; // Exit the function, preventing login
+      } else if (accountsStatus == 'suspended') {
 
-        // Navigate to Home Page regardless of account status
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => UserHomePage()),
-        );
-      } else {
-        // Log the error response from server
-        print('Login failed, response body: ${response.body}');
+        _showAlertDialog('Your account is currently suspended.');
+        return; // Exit the function, preventing login
+      } else if (accountsStatus != 'verified') {
 
-        // Handle invalid credentials
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Error'),
-              content: Text('Invalid credentials. Please try again.'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('OK'),
-                ),
-              ],
-            );
-          },
-        );
+        _showAlertDialog('Your account status is not verified.');
+        return; // Handle other unexpected statuses if needed
       }
-    } catch (error) {
-      // Log the error details
-      print('Error during login: $error');
+      
+      // Navigate to Home Page regardless of account status
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => UserHomePage()),
+      );
+    } else {
+      // Log the error response from server
+      print('Login failed, response body: ${response.body}');
 
-      // Handle server errors
+      // Handle invalid credentials
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Error'),
-            content: Text('An error occurred. Please try again later.'),
+            content: Text('Invalid credentials. Please try again.'),
             actions: [
               TextButton(
                 onPressed: () {
@@ -180,7 +162,30 @@ class _UserLoginState extends State<UserLogin> {
         },
       );
     }
+  } catch (error) {
+    // Log the error details
+    print('Error during login: $error');
+
+    // Handle server errors
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Error'),
+          content: Text('An error occurred. Please try again later.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
+}
 
   String? _validateUsernameOrContact(String? value) {
     if (value == null || value.isEmpty) {
@@ -235,14 +240,8 @@ class _UserLoginState extends State<UserLogin> {
                         width: 200,
                       ),
                     ),
-                    SizedBox(height: 50),
-                    Text(
-                      "Login",
-                      style: TextStyle(
-                          color: Color.fromARGB(255, 7, 49, 112),
-                          fontSize: 60,
-                          fontFamily: 'roboto'),
-                    ),
+                    SizedBox(height: 20),
+               
                   ],
                 ),
               ),
@@ -261,6 +260,14 @@ class _UserLoginState extends State<UserLogin> {
                     key: _formKey,
                     child: Column(
                       children: <Widget>[
+                          Text(
+                      "Resident login",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontFamily: 'roboto',
+                          fontWeight: FontWeight.bold),
+                    ),
                         SizedBox(height: 40),
                         TextFormField(
                           controller: _usernameController,
@@ -320,7 +327,7 @@ class _UserLoginState extends State<UserLogin> {
                             },
                             child: Text(
                               "Forgot Password?",
-                              style: TextStyle(color: Colors.grey),
+                              style: TextStyle(color: Colors.white),
                             ),
                           ),
                         ),
@@ -353,7 +360,7 @@ class _UserLoginState extends State<UserLogin> {
                           children: [
                             Text(
                               "Don't have an account? ",
-                              style: TextStyle(color: Colors.grey),
+                              style: TextStyle(color: Colors.white),
                             ),
                             TextButton(
                               onPressed: () {
@@ -364,9 +371,9 @@ class _UserLoginState extends State<UserLogin> {
                                 );
                               },
                               child: Text(
-                                "Sign Up",
+                                "Sign up",
                                 style: TextStyle(
-                                  color: Colors.lightBlue,
+                                  color: Color.fromARGB(255, 109, 192, 255),
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
